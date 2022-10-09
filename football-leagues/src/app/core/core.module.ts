@@ -5,18 +5,20 @@ import { CoreRoutingModule } from './core-routing.module';
 import { SearchByTextInputComponent } from './components/search-by-text-input/search-by-text-input.component';
 import { DropdownListComponent } from './components/dropdown-list/dropdown-list.component';
 import { SortByComponent } from './components/sort-by/sort-by.component';
-
+import { SortableDirective } from './directive/sortable.directive';
 @NgModule({
   declarations: [
-  
     SearchByTextInputComponent,
-       DropdownListComponent,
-       SortByComponent
+    DropdownListComponent,
+    SortByComponent,
+    SortableDirective
   ],
   imports: [
     CommonModule,
     CoreRoutingModule
   ],
-  exports: [ ]
+  exports: [
+    SortableDirective
+  ]
 })
 export class CoreModule { }

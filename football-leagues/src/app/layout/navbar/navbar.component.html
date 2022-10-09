@@ -10,7 +10,11 @@
                     <a class="nav-link active" aria-current="page" href="#">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Leagues</a>
+                    <!-- <a class="nav-link" href="/leagues">Leagues</a> -->
+
+                    <a [routerLink]="['/leagues']"  routerLinkActive="active"  class="nav-link">
+                        Leagues
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Players</a>

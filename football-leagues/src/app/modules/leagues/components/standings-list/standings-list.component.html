@@ -1,1 +1,37 @@
-<p>standings-list works!</p>
+<ng-container *ngIf="{
+        standings: this.standing$ | async,
+        params: queryParams$ | async,
+        pathParams: routerEventParams$ | async
+    } as data">
+    <div class="table-responsive">
+        <table class="table table-striped table-hover caption-top">
+            <caption>Standings</caption>
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col" sortable="position" (sort)="onSort($event)">Position</th>
+                    <th scope="col" sortable="team_name" (sort)="onSort($event)">Team Name</th>
+                    <th scope="col" sortable="overall_games_played" (sort)="onSort($event)">Played</th>
+                    <th scope="col" sortable="overall_won" (sort)="onSort($event)">Won</th>
+                    <th scope="col" sortable="overall_draw" (sort)="onSort($event)">Drawn</th>
+                    <th scope="col" sortable="overall_lost" (sort)="onSort($event)">Lost</th>
+                    <th scope="col" sortable="overall_goals_scored" (sort)="onSort($event)">Goal</th>
+                    <th scope="col" sortable="overall_goal_diff" (sort)="onSort($event)">Difference</th>
+                    <th scope="col" sortable="points" (sort)="onSort($event)">Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let standing of this.standings">
+                    <td scope="col">{{ standing.position }}</td>
+                    <td scope="col">{{ standing.team_name }}</td>
+                    <td scope="col">{{ standing.overall_games_played }}</td>
+                    <td scope="col">{{ standing.overall_won }}</td>
+                    <td scope="col">{{ standing.overall_draw }}</td>
+                    <td scope="col">{{ standing.overall_lost }}</td>
+                    <td scope="col">{{ standing.overall_goals_scored }}</td>
+                    <td scope="col">{{ standing.overall_goal_diff }}</td>
+                    <td scope="col">{{ standing.points }}</td>
+                  </tr>
+            </tbody>
+        </table>
+    </div>
+</ng-container>
