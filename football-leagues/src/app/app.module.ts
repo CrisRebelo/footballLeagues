@@ -5,7 +5,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LayoutModule } from './layout/layout.module';
 import { CoreModule } from './core/core.module';
-
+import { LeaguesModule } from './modules/leagues/leagues.module';
+import { TeamsModule } from './modules/teams/teams.module';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,9 @@ import { CoreModule } from './core/core.module';
     AppRoutingModule,
     LayoutModule,
     HttpClientModule,
-    CoreModule
+    CoreModule,
+    LeaguesModule,
+    TeamsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

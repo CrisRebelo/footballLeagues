@@ -3,7 +3,9 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { catchError, finalize, map, Observable, of, Subscription, switchMap } from 'rxjs';
 import { compare, SortEvent } from 'src/app/core/data-models/sortable.models';
 import { SortableDirective } from 'src/app/core/directive/sortable.directive';
+import { FormatDateService } from 'src/app/core/helpers/formatDate.service';
 import { ObjectFlattenerService } from 'src/app/core/helpers/object-flattener.service';
+import { SortListService } from 'src/app/core/helpers/sort-list.service';
 import { FlatStandings, Standing } from '../../models/standings.models';
 import { StandingsService } from '../../services/standings.service';
 
@@ -15,33 +17,32 @@ import { StandingsService } from '../../services/standings.service';
 export class StandingsListComponent implements OnInit {
     isLoading = false;
     standing$!: Observable<FlatStandings[]>;
-    queryParams$!: Observable<Params>;
-    routerEventsSub!: Subscription;
-    routerEventParams$!: Observable<Params>;
     seasonId: number;
 
     standings!: FlatStandings[];
-    vanillaStandings!: FlatStandings[];
+    originalStandings!: FlatStandings[];
 
     @ViewChildren(SortableDirective) headers!: QueryList<SortableDirective>;
 
     constructor(
         private standingsService: StandingsService,
         private route: ActivatedRoute,
-        private objFlattenerService: ObjectFlattenerService
+        private objFlattenerService: ObjectFlattenerService,
+        private formatDateService: FormatDateService,
+        private sortListService: SortListService
     ) {
         this.seasonId = +this.route.snapshot.params['id'];
     }
 
     getStandings(seasonId: number) {
-        const date = this.formatDate(new Date());
+        const date = this.formatDateService.formatDate(new Date());
         this.isLoading = true;
         this.standing$ = this.standingsService.getLeagueStandingsBySeason(seasonId, date).pipe(
         switchMap((standings) => {
             return of(standings).pipe(
             map((standings) => {
                 this.standings = this.flattenStandingsObject(standings.data);
-                this.vanillaStandings = [...this.standings];
+                this.originalStandings = [...this.standings];
                 return this.standings;
             }),
             catchError((error) => {
@@ -65,35 +66,13 @@ export class StandingsListComponent implements OnInit {
     }
 
     onSort({column, direction}: SortEvent<FlatStandings>) {
-
-      // resetting other headers
       this.headers.forEach(header => {
         if (header.sortable !== column) {
           header.direction = '';
         }
       });
+      this.standings = this.sortListService.sortList({column, direction}, this.originalStandings);
 
-      // sorting countries
-      if (direction === '' || column === '') {
-        this.standings = this.vanillaStandings;
-      } else {
-        this.standings = [...this.vanillaStandings].sort((a, b) => {
-          const res = compare(a[column], b[column]);
-          return direction === 'asc' ? res : -res;
-        });
-      }
-    }
-
-    padTo2Digits(num: number) {
-        return num.toString().padStart(2, '0');
-      }
-
-    formatDate(date: Date) {
-        return [
-            date.getFullYear(),
-            this.padTo2Digits(date.getMonth() + 1),
-            this.padTo2Digits(date.getDate()),
-        ].join('-');
     }
 
     ngOnInit(): void {
